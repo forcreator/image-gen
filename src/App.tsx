@@ -141,7 +141,7 @@ function App() {
         <div className="flex-1 flex flex-col md:flex-row gap-8">
           {/* Left side - Form */}
           <div className="md:w-2/5 flex flex-col">
-            <form onSubmit={handleSubmit} className="space-y-4 bg-gray-800/20 p-6 rounded-lg">
+            <form onSubmit={handleSubmit} className={`space-y-4 bg-gray-800/20 p-6 rounded-lg ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="space-y-2">
                 <label htmlFor="prompt" className="block text-sm font-medium text-gray-300">
                   Enter your image prompt
@@ -154,6 +154,7 @@ function App() {
                   className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition"
                   placeholder="A serene forest landscape at sunset..."
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -164,6 +165,7 @@ function App() {
                     value={imageType}
                     onChange={(e) => setImageType(e.target.value as ImageType)}
                     className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition"
+                    disabled={loading}
                   >
                     <option value="square">Square</option>
                     <option value="portrait">Portrait</option>
@@ -178,6 +180,7 @@ function App() {
                     value={style}
                     onChange={(e) => setStyle(e.target.value as StyleType)}
                     className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition"
+                    disabled={loading}
                   >
                     <option value="realistic">Realistic</option>
                     <option value="cartoon">Cartoon</option>
@@ -192,12 +195,12 @@ function App() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium flex items-center justify-center space-x-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium flex items-center justify-center space-x-2 transition disabled:opacity-50 disabled:cursor-not-allowed ${loading ? 'animate-pulse' : ''}`}
               >
                 {loading ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
-                    <span>Generating...</span>
+                    <span>Generating Image...</span>
                   </>
                 ) : (
                   <>
@@ -228,7 +231,14 @@ function App() {
             <div className="flex-1 flex items-center justify-center bg-gray-800/20 rounded-lg p-6">
               <canvas ref={canvasRef} className="hidden" />
               
-              {croppedUrl ? (
+              {loading ? (
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="text-gray-400 text-center">
+                    Creating your masterpiece...
+                  </div>
+                </div>
+              ) : croppedUrl ? (
                 <div className="w-full flex flex-col items-center gap-4">
                   <div className="flex justify-center items-center">
                     <img
